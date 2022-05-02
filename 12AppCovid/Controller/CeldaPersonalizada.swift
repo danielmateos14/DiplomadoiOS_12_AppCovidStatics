@@ -14,6 +14,7 @@ class CeldaPersonalizada: UITableViewCell {
     @IBOutlet weak var casosDarios: UILabel!
     @IBOutlet weak var muertesDiarias: UILabel!
     @IBOutlet weak var recuperadosDiarios: UILabel!
+    @IBOutlet weak var labelMuertesEnRojo: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()

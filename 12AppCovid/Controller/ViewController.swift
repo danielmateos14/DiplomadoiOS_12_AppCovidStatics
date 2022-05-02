@@ -22,7 +22,7 @@ class ViewController: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        Registrar la celda presonalizada en la tabla
+//        MARK: Registrar la celda presonalizada en la tabla
         tablaPrototipo.register(UINib(nibName: "CeldaPersonalizada", bundle: nil), forCellReuseIdentifier: "celdaReutilizada")
         
 //        delegado y datasource de la tabla
@@ -37,7 +37,8 @@ class ViewController: UIViewController{
 
 }//VC
 
-//Extension del VC para la tabla
+//MARK: Extension del VC para la tabla
+
 extension ViewController: UITableViewDataSource, UITableViewDelegate{
 //    Numero de secciones
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -49,7 +50,7 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate{
 //        variable celda que indica que sera del tipo celda personalizada
         let celda = tablaPrototipo.dequeueReusableCell(withIdentifier: "celdaReutilizada", for: indexPath) as! CeldaPersonalizada
         
-//        Creacion de la imagen para mostrar
+//        MARK: Creacion de la imagen para mostrar
 //        Variable string donde esta la imagen
         if let banderaString = tablaPaises[indexPath.row].countryInfo.flag{
 //            variable url que recibe el string de arriba
@@ -71,7 +72,16 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate{
 //        Llenado de los demas campos usando string interpolation
         celda.labelPais.text = tablaPaises[indexPath.row].country
         celda.casosDarios.text = "Casos hoy: \(tablaPaises[indexPath.row].todayCases ?? 0)"
-        celda.muertesDiarias.text = "Muertes hoy: \(tablaPaises[indexPath.row].todayDeaths ?? 0)"
+        
+//        Poner en rojo las muertes
+        if tablaPaises[indexPath.row].todayDeaths != 0{
+            celda.labelMuertesEnRojo.text = String(tablaPaises[indexPath.row].todayDeaths ?? 0)
+            celda.labelMuertesEnRojo.textColor = UIColor.red
+        }else{
+            celda.labelMuertesEnRojo.text = String(tablaPaises[indexPath.row].todayDeaths ?? 0)
+        }
+        
+        celda.muertesDiarias.text = "Muertes hoy: "
         celda.recuperadosDiarios.text = "Recuperados hoy: \(tablaPaises[indexPath.row].todayRecovered ?? 0)"
         
 //        retorna la celda llena
@@ -106,7 +116,9 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate{
     
 }//Extension TableView
 
-//extension del protocolo
+
+// MARK: extension del protocolo
+
 extension ViewController: ManagerProtocol{
     
 //    manda a llamar a la funcion que llena la tabla con el objeto decodificado

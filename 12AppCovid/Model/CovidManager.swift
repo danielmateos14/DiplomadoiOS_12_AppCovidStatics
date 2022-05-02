@@ -18,7 +18,10 @@ struct CovidManager{
 //    Delegado del protocolo
     var delegate: ManagerProtocol?
     
-//    Funcion para extraer los datos de la API
+    
+    
+//MARK: Funcion para extraer los datos de la API
+    
     func funcionUrlSessions(){
 //        Variable String
         let urlString = "https://corona.lmao.ninja/v3/covid-19/countries/"
@@ -48,7 +51,8 @@ struct CovidManager{
     
     
     
-//    Funcion que parsea el json y lo convierte en objeto, devuelve array del coviddata
+// MARK: Funcion que parsea el json y lo convierte en objeto, devuelve array del coviddata
+    
     func parseaJson(recibeData: Data) -> [CovidData]? {
 //        Variable decodificador
         let deco = JSONDecoder()

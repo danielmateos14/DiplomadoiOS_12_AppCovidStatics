@@ -13,6 +13,7 @@ class DetallesViewController: UIViewController {
 //    como objeto
     var recibeDatos: CovidData?
     
+    
 //Variables graficas
     @IBOutlet weak var ivBandera: UIImageView!
     @IBOutlet weak var labelPais: UILabel!
@@ -23,6 +24,9 @@ class DetallesViewController: UIViewController {
     @IBOutlet weak var labelRecuperadosDiarios: UILabel!
     @IBOutlet weak var labelRecuperadosTotales: UILabel!
     
+    @IBOutlet weak var labelFechaCasos: UILabel!
+    @IBOutlet weak var labelFechaMuertes: UILabel!
+    @IBOutlet weak var labelFechaRecuperados: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,16 +44,27 @@ class DetallesViewController: UIViewController {
             }//bandera url
         }//Bandera string
         
+        //    Variable para la fecha
+            let accessDateClass = Date.now
+            var fecha = ""
+            fecha = accessDateClass.formatted(.dateTime
+                                                .day()
+                                                .month()
+                                                .year(.defaultDigits))
+        
         
 //        Llenado de los campos con el objeto que viene de la otra pantalla y esta guardado
 //        en el objeto de aqui
         labelPais.text = recibeDatos?.country
         labelCasosTotales.text = "Casos totales: \(recibeDatos?.cases ?? 0)"
-        labelCasosDiarios.text = "Casos hoy (aqui pones la fecha): \(recibeDatos?.todayCases ?? 0)"
+        labelCasosDiarios.text = "Casos hoy: \(recibeDatos?.todayCases ?? 0)"
+        labelFechaCasos.text = fecha
         labelMuertesTotales.text = "Muertes totales: \(recibeDatos?.deaths ?? 0)"
-        labelMuertesDiarias.text = "Muertes hoy: (aqui pones la fecha): \(recibeDatos?.todayDeaths ?? 0)"
+        labelMuertesDiarias.text = "Muertes hoy: \(recibeDatos?.todayDeaths ?? 0)"
+        labelFechaMuertes.text = fecha
         labelRecuperadosTotales.text = "Recuperados totales: \(recibeDatos?.recovered ?? 0)"
-        labelRecuperadosDiarios.text = "Recuperados hoy: (aqui pones la fecha): \(recibeDatos?.todayRecovered ?? 0)"
+        labelRecuperadosDiarios.text = "Recuperados hoy: \(recibeDatos?.todayRecovered ?? 0)"
+        labelFechaRecuperados.text = fecha
     
     }//view did load
 
