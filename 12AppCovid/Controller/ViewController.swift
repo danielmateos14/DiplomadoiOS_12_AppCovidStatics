@@ -20,12 +20,14 @@ class ViewController: UIViewController{
 
 //    Variable grafica de la tabla
     @IBOutlet weak var tablaPrototipo: UITableView!
+//    Variable grafica de la barra de busqueda
     @IBOutlet weak var sbBuscarPais: UISearchBar!
     
 //    Funcion de inicio
     override func viewDidLoad() {
         super.viewDidLoad()
         
+//        Al iniciar la tabla paises busqueda tendra todo lo que trae tabla paises
         tablaPaisesBusqueda = tablaPaises
         
 //        MARK: Registrar la celda presonalizada en la tabla
@@ -50,7 +52,7 @@ class ViewController: UIViewController{
 //MARK: Extension del VC para la tabla
 
 extension ViewController: UITableViewDataSource, UITableViewDelegate{
-//    Numero de secciones
+//    Numero de secciones con el array de busqueda
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return tablaPaisesBusqueda.count
     }//Numero de secciones
@@ -135,6 +137,7 @@ extension ViewController: ManagerProtocol{
     func actualizarUI(recibeArrayCovidData: [CovidData]) {
 //        asiga a la table lo que trae del manager que es el objeto decidificado
         tablaPaises = recibeArrayCovidData
+//        Al actualizar el delgado tambien vuelve a llenar la tabla busqueda
         tablaPaisesBusqueda = tablaPaises
         
 //        dispatch para actualizar la tabla cada que se ejecute esta funcion
@@ -150,24 +153,31 @@ extension ViewController: ManagerProtocol{
 
 extension ViewController: UISearchBarDelegate{
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        
-        
+//        Vaciamos el array de busqueda
         tablaPaisesBusqueda = []
         
+//        Hacemos if para saber si esta vacia la barra de busqueda
         if searchText == "" || searchText.isEmpty{
+//            Si esta vacia entonces sera busqueda sera igual a tablapaises o sea tendra todos los elementos
             tablaPaisesBusqueda = tablaPaises
         }else{
+//            En caso contrario se hace un for
             for pais in tablaPaises{
+//                Cada indice del for va buscando en country y pregunta si contiene lo que vamos escribiendo
                 if pais.country.lowercased().contains(searchText.lowercased()){
+//                    Si lo contiene entonces lo va agregando al array vacio
                     tablaPaisesBusqueda.append(pais)
                 }
             }
         }
         
+//        Y lo va actualizando cada que lo agrega
         self.tablaPrototipo.reloadData()
     }
     
+//    Al presionar el boton busqueda
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+//        Cerramos el teclado
         sbBuscarPais.resignFirstResponder()
     }
 }

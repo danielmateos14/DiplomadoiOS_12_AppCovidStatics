@@ -60,9 +60,10 @@ struct CovidManager{
         do{
 //            variable array que contendra los datos decodificados que recibe desde URLSessions
             let datosDecodificados: [CovidData] = try deco.decode([CovidData].self, from: recibeData)
-//            Debug
+//            MARK: Debug
 //            print("Datos decodificados, cuantos?")
 //            print(datosDecodificados[0].cases!)
+            
 //            Variable paises del tipo array coviddata que guarda los datos decodificados
             let paises:[CovidData] = datosDecodificados
             
