@@ -14,13 +14,19 @@ class ViewController: UIViewController{
     var tablaPaises: [CovidData] = []
 //    Variable objeto para enviar el objeto lleno a la segunda pantalla
     var paisAMandar: CovidData?
+    
+//    Array para la barra de busqueda
+    var tablaPaisesBusqueda: [CovidData]!
 
 //    Variable grafica de la tabla
     @IBOutlet weak var tablaPrototipo: UITableView!
+    @IBOutlet weak var sbBuscarPais: UISearchBar!
     
 //    Funcion de inicio
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        tablaPaisesBusqueda = tablaPaises
         
 //        MARK: Registrar la celda presonalizada en la tabla
         tablaPrototipo.register(UINib(nibName: "CeldaPersonalizada", bundle: nil), forCellReuseIdentifier: "celdaReutilizada")
@@ -32,9 +38,13 @@ class ViewController: UIViewController{
         covidManager.delegate = self
 //        funcion para parsear y la API
         covidManager.funcionUrlSessions()
+        
+//        Delegado de la search bar
+        sbBuscarPais.delegate = self
     }//VDidLoad
 
-
+    
+    
 }//VC
 
 //MARK: Extension del VC para la tabla
@@ -42,7 +52,7 @@ class ViewController: UIViewController{
 extension ViewController: UITableViewDataSource, UITableViewDelegate{
 //    Numero de secciones
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tablaPaises.count
+        return tablaPaisesBusqueda.count
     }//Numero de secciones
     
 //    Llenado de la celda personalizada
@@ -52,7 +62,7 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate{
         
 //        MARK: Creacion de la imagen para mostrar
 //        Variable string donde esta la imagen
-        if let banderaString = tablaPaises[indexPath.row].countryInfo.flag{
+        if let banderaString = tablaPaisesBusqueda[indexPath.row].countryInfo.flag{
 //            variable url que recibe el string de arriba
             if let banderaUrl = URL(string: banderaString){
 //                Dispatch para que carguen mejor las imagenes
@@ -70,19 +80,19 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate{
         }//baderaString
         
 //        Llenado de los demas campos usando string interpolation
-        celda.labelPais.text = tablaPaises[indexPath.row].country
-        celda.casosDarios.text = "Casos hoy: \(tablaPaises[indexPath.row].todayCases ?? 0)"
+        celda.labelPais.text = tablaPaisesBusqueda[indexPath.row].country
+        celda.casosDarios.text = "Casos hoy: \(tablaPaisesBusqueda[indexPath.row].todayCases ?? 0)"
         
 //        Poner en rojo las muertes
         if tablaPaises[indexPath.row].todayDeaths != 0{
-            celda.labelMuertesEnRojo.text = String(tablaPaises[indexPath.row].todayDeaths ?? 0)
+            celda.labelMuertesEnRojo.text = String(tablaPaisesBusqueda[indexPath.row].todayDeaths ?? 0)
             celda.labelMuertesEnRojo.textColor = UIColor.red
         }else{
-            celda.labelMuertesEnRojo.text = String(tablaPaises[indexPath.row].todayDeaths ?? 0)
+            celda.labelMuertesEnRojo.text = String(tablaPaisesBusqueda[indexPath.row].todayDeaths ?? 0)
         }
         
         celda.muertesDiarias.text = "Muertes hoy: "
-        celda.recuperadosDiarios.text = "Recuperados hoy: \(tablaPaises[indexPath.row].todayRecovered ?? 0)"
+        celda.recuperadosDiarios.text = "Recuperados hoy: \(tablaPaisesBusqueda[indexPath.row].todayRecovered ?? 0)"
         
 //        retorna la celda llena
         return celda
@@ -98,7 +108,7 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate{
 //        print(tablaPaises[indexPath.row])
         
 //        Variable pais del tipo array se llena con la tabla en cada celda
-        paisAMandar = tablaPaises[indexPath.row]
+        paisAMandar = tablaPaisesBusqueda[indexPath.row]
 //        preparar para enviar los datos al otro VC
         performSegue(withIdentifier: "segueDetalles", sender: self)
         
@@ -125,6 +135,7 @@ extension ViewController: ManagerProtocol{
     func actualizarUI(recibeArrayCovidData: [CovidData]) {
 //        asiga a la table lo que trae del manager que es el objeto decidificado
         tablaPaises = recibeArrayCovidData
+        tablaPaisesBusqueda = tablaPaises
         
 //        dispatch para actualizar la tabla cada que se ejecute esta funcion
         DispatchQueue.main.async {
@@ -134,4 +145,30 @@ extension ViewController: ManagerProtocol{
 }//Extension VC protocol
 
 
+
+// MARK: extension de la search bar
+
+extension ViewController: UISearchBarDelegate{
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        
+        tablaPaisesBusqueda = []
+        
+        if searchText == "" || searchText.isEmpty{
+            tablaPaisesBusqueda = tablaPaises
+        }else{
+            for pais in tablaPaises{
+                if pais.country.lowercased().contains(searchText.lowercased()){
+                    tablaPaisesBusqueda.append(pais)
+                }
+            }
+        }
+        
+        self.tablaPrototipo.reloadData()
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        sbBuscarPais.resignFirstResponder()
+    }
+}
 

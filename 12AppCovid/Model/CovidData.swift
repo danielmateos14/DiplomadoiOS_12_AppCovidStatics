@@ -9,7 +9,7 @@ import Foundation
 
 //Estructura para parsear API
 struct CovidData: Codable{
-    let country: String?
+    let country: String
     let countryInfo: CountryInfo
     let cases: Double?
     let todayCases: Int?
